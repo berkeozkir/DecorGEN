@@ -62,6 +62,10 @@ def generate_random():
     selected_vibe = random.choice(list(vibes.keys()))
     return selected_type, selected_adjective, selected_look, selected_feel, selected_vibe
 
+# Initialize session state for history
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 # Streamlit app UI
 st.title("Decorative House Item Generator")
 st.write("Generate decorative house item designs by selecting categories manually or randomly!")
@@ -76,23 +80,44 @@ if method == "Manual":
     selected_feel = st.selectbox("Select a feel:", list(feels.keys()))
     selected_vibe = st.selectbox("Select a vibe:", list(vibes.keys()))
 
+    if st.button("Save Selection"):
+        st.session_state.history.append({
+            "type": selected_type,
+            "adjective": selected_adjective,
+            "look": selected_look,
+            "feel": selected_feel,
+            "vibe": selected_vibe
+        })
+
 elif method == "Random":
-    selected_type, selected_adjective, selected_look, selected_feel, selected_vibe = generate_random()
+    if st.button("Generate Random Selection"):
+        selected_type, selected_adjective, selected_look, selected_feel, selected_vibe = generate_random()
+        st.session_state.history.append({
+            "type": selected_type,
+            "adjective": selected_adjective,
+            "look": selected_look,
+            "feel": selected_feel,
+            "vibe": selected_vibe
+        })
 
-    st.write(f"### Randomly Selected:")
-    st.write(f"- **Type:** {selected_type}")
-    for key, value in selected_adjective.items():
-        st.write(f"- **{key.capitalize()}:** {value}")
-    st.write(f"- **Look:** {selected_look}")
-    st.write(f"- **Feel:** {selected_feel}")
-    st.write(f"- **Vibe:** {selected_vibe}")
+    if st.session_state.history:
+        st.write(f"### Last Random Selection:")
+        last_random = st.session_state.history[-1]
+        st.write(f"- **Type:** {last_random['type']}")
+        for key, value in last_random['adjective'].items():
+            st.write(f"- **{key.capitalize()}:** {value}")
+        st.write(f"- **Look:** {last_random['look']}")
+        st.write(f"- **Feel:** {last_random['feel']}")
+        st.write(f"- **Vibe:** {last_random['vibe']}")
 
-# Display final selection
-if method == "Manual":
-    st.write(f"### Your Selections:")
-    st.write(f"- **Type:** {selected_type}")
-    for key, value in selected_adjective.items():
-        st.write(f"- **{key.capitalize()}:** {value}")
-    st.write(f"- **Look:** {selected_look}")
-    st.write(f"- **Feel:** {selected_feel}")
-    st.write(f"- **Vibe:** {selected_vibe}")
+# Display history
+if st.session_state.history:
+    st.write("### Selection History:")
+    for i, item in enumerate(st.session_state.history, 1):
+        st.write(f"#### Selection {i}:")
+        st.write(f"- **Type:** {item['type']}")
+        for key, value in item['adjective'].items():
+            st.write(f"- **{key.capitalize()}:** {value}")
+        st.write(f"- **Look:** {item['look']}")
+        st.write(f"- **Feel:** {item['feel']}")
+        st.write(f"- **Vibe:** {item['vibe']}")
