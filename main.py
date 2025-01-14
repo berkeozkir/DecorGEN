@@ -79,6 +79,7 @@ st.markdown("""
             margin-bottom: 15px;
             box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            background-color: #ffffff;
         }
 
         .card:hover {
@@ -101,6 +102,28 @@ st.markdown("""
         .list-item {
             color: #666666;
         }
+
+        /* Sidebar Styling */
+        .sidebar .sidebar-content {
+            background-color: #f5f5f5; /* Light Gray */
+            color: #333333;
+        }
+
+        /* Button Styling */
+        .css-1emrehy.edgvbvh3 {
+            background-color: #007BFF; /* Bootstrap Blue */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-bottom: 5px;
+        }
+
+        .css-1emrehy.edgvbvh3:hover {
+            background-color: #0056b3; /* Darker Blue on Hover */
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -111,16 +134,19 @@ st.write("Generate decorative house item designs by selecting categories manuall
 # Sidebar for selection history
 st.sidebar.title("Selection History")
 if st.session_state.history:
-    for i, item in enumerate(st.session_state.history, 1):
-        if st.sidebar.button(f"Selection {i}", key=f"history_{i}"):
-            st.session_state.selected_history_index = i - 1
+    # Display history in reverse chronological order
+    for i, item in enumerate(reversed(st.session_state.history), 1):
+        # Create a meaningful label using Type and Vibe
+        label = f"{item['type']} ({item['vibe']})"
+        if st.sidebar.button(label, key=f"history_{len(st.session_state.history)-i}"):
+            st.session_state.selected_history_index = len(st.session_state.history) - i
 
 # Display selected history item in main area
 if st.session_state.selected_history_index is not None:
     selected_item = st.session_state.history[st.session_state.selected_history_index]
     st.markdown(f"""
         <div class="card">
-            <div class="header">Selection {st.session_state.selected_history_index + 1}</div>
+            <div class="header">{"Recent Selection" if st.session_state.selected_history_index == len(st.session_state.history)-1 else f"Selection #{st.session_state.selected_history_index + 1}"}</div>
             <div style="display: flex; gap: 40px;">
                 <div>
                     <div class="subheader">Category & Type</div>
@@ -187,7 +213,7 @@ elif method == "Random":
         st.write(f"### Last Random Selection:")
         st.markdown(f"""
             <div class="card">
-                <div class="header">Selection {len(st.session_state.history)}</div>
+                <div class="header">Random Selection</div>
                 <div style="display: flex; gap: 40px;">
                     <div>
                         <div class="subheader">Category & Type</div>
