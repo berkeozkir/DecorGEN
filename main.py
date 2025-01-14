@@ -66,12 +66,49 @@ def generate_random():
 if "history" not in st.session_state:
     st.session_state.history = []
 
+# Apply modern dark theme
+st.set_page_config(page_title="Decorative House Item Generator", layout="wide")
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #1e1e2f;
+            color: #ffffff;
+        }
+        .stCard {
+            background-color: #2c2c3d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Streamlit app UI
 st.title("Decorative House Item Generator")
 st.write("Generate decorative house item designs by selecting categories manually or randomly!")
 
+# Sidebar for selection history
+st.sidebar.title("Selection History")
+if st.session_state.history:
+    for i, item in enumerate(st.session_state.history, 1):
+        if st.sidebar.button(f"Selection {i}"):
+            st.markdown(f"""
+                <div class="stCard">
+                    <h4>Selection {i}</h4>
+                    <p><b>Type:</b> {item['type']}</p>
+                    <p><b>Adjectives:</b></p>
+                    <ul>
+                        {''.join([f'<li>{key.capitalize()}: {value}</li>' for key, value in item['adjective'].items()])}
+                    </ul>
+                    <p><b>Look:</b> {item['look']}</p>
+                    <p><b>Feel:</b> {item['feel']}</p>
+                    <p><b>Vibe:</b> {item['vibe']}</p>
+                </div>
+            ", unsafe_allow_html=True)
+
 # Selection method
-method = st.radio("Choose a selection method:", ["Manual", "Random"])
+method = st.radio("Choose a selection method:", ["Manual", "Random"], horizontal=True)
 
 if method == "Manual":
     selected_type = st.selectbox("Select a type:", list(types.keys()))
@@ -108,16 +145,4 @@ elif method == "Random":
             st.write(f"- **{key.capitalize()}:** {value}")
         st.write(f"- **Look:** {last_random['look']}")
         st.write(f"- **Feel:** {last_random['feel']}")
-        st.write(f"- **Vibe:** {last_random['vibe']}")
-
-# Display history
-if st.session_state.history:
-    st.write("### Selection History:")
-    for i, item in enumerate(st.session_state.history, 1):
-        st.write(f"#### Selection {i}:")
-        st.write(f"- **Type:** {item['type']}")
-        for key, value in item['adjective'].items():
-            st.write(f"- **{key.capitalize()}:** {value}")
-        st.write(f"- **Look:** {item['look']}")
-        st.write(f"- **Feel:** {item['feel']}")
-        st.write(f"- **Vibe:** {item['vibe']}")
+        st.write(f"- **Vibe:** {last_random['vibe']}\n")
