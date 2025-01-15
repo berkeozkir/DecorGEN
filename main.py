@@ -129,7 +129,7 @@ st.markdown("""
 
 # Streamlit app UI
 st.title("Decorative House Item Generator")
-st.write("Generate decorative house item designs by selecting categories manually, randomly, or partially!")
+st.write("Generate decorative house item designs by selecting categories manually, randomly, or customizing!")
 
 # Sidebar for selection history
 st.sidebar.title("Selection History")
@@ -172,7 +172,7 @@ if st.session_state.selected_history_index is not None:
     st.markdown("---")
 
 # Selection method
-method = st.radio("Choose a selection method:", ["Manual", "Random", "Custom"], horizontal=True)
+method = st.radio("Choose a selection method:", ["Manual", "Random", "Custom Random"], horizontal=True)
 
 if method == "Manual":
     with st.form(key='manual_selection'):
@@ -237,98 +237,97 @@ elif method == "Random":
             </div>
         """, unsafe_allow_html=True)
 
-elif method == "Custom":
-    st.subheader("Custom Selection")
-    with st.form(key='custom_selection'):
-        st.write("Select the attributes you want to set manually. Others will be randomly generated.")
+elif method == "Custom Random":
+    st.subheader("Custom Random Selection")
+    with st.form(key='custom_random_selection'):
+        st.write("Toggle the attributes you want to customize. Unselected attributes will be randomized.")
 
-        # Attribute selection checkboxes
-        select_category_type = st.checkbox("Set Category & Type")
-        select_adjectives = st.checkbox("Set Adjectives")
-        select_look = st.checkbox("Set Look")
-        select_feel = st.checkbox("Set Feel")
-        select_vibe = st.checkbox("Set Vibe")
+        # Toggle buttons for each attribute group
+        customize_category_type = st.checkbox("Customize Category & Type")
+        customize_adjectives = st.checkbox("Customize Adjectives")
+        customize_look = st.checkbox("Customize Look")
+        customize_feel = st.checkbox("Customize Feel")
+        customize_vibe = st.checkbox("Customize Vibe")
 
-        # Initialize a dictionary to hold selections
-        custom_selection = {}
+        # Initialize a dictionary to hold user inputs
+        user_selection = {}
 
-        # Category & Type
-        if select_category_type:
-            selected_category_custom = st.selectbox("Select a category:", list(types.keys()), key='custom_category')
-            selected_type_custom = st.selectbox("Select a type:", types[selected_category_custom], key='custom_type')
-            custom_selection['category'] = selected_category_custom
-            custom_selection['type'] = selected_type_custom
+        # Customize Category & Type
+        if customize_category_type:
+            selected_category_custom = st.selectbox("Select a category:", list(types.keys()), key='custom_category_random')
+            selected_type_custom = st.selectbox("Select a type:", types[selected_category_custom], key='custom_type_random')
+            user_selection['category'] = selected_category_custom
+            user_selection['type'] = selected_type_custom
 
-        # Adjectives
-        if select_adjectives:
-            st.markdown("**Select Adjectives:**")
+        # Customize Adjectives
+        if customize_adjectives:
+            st.markdown("**Customize Adjectives:**")
             selected_adjective_custom = {}
             for key, values in adjectives.items():
-                selected_adjective_custom[key] = st.selectbox(f"Select {key}:", values, key=f'custom_{key.lower()}')
-            custom_selection['adjective'] = selected_adjective_custom
+                selected_adjective_custom[key] = st.selectbox(f"Select {key}:", values, key=f'custom_random_{key.lower()}')
+            user_selection['adjective'] = selected_adjective_custom
 
-        # Look
-        if select_look:
-            selected_look_custom = st.selectbox("Select a look:", list(looks.keys()), key='custom_look')
-            custom_selection['look'] = selected_look_custom
+        # Customize Look
+        if customize_look:
+            selected_look_custom = st.selectbox("Select a look:", list(looks.keys()), key='custom_look_random')
+            user_selection['look'] = selected_look_custom
 
-        # Feel
-        if select_feel:
-            selected_feel_custom = st.selectbox("Select a feel:", list(feels.keys()), key='custom_feel')
-            custom_selection['feel'] = selected_feel_custom
+        # Customize Feel
+        if customize_feel:
+            selected_feel_custom = st.selectbox("Select a feel:", list(feels.keys()), key='custom_feel_random')
+            user_selection['feel'] = selected_feel_custom
 
-        # Vibe
-        if select_vibe:
-            selected_vibe_custom = st.selectbox("Select a vibe:", list(vibes.keys()), key='custom_vibe')
-            custom_selection['vibe'] = selected_vibe_custom
+        # Customize Vibe
+        if customize_vibe:
+            selected_vibe_custom = st.selectbox("Select a vibe:", list(vibes.keys()), key='custom_vibe_random')
+            user_selection['vibe'] = selected_vibe_custom
 
-        submit_custom = st.form_submit_button("Generate Custom Selection")
+        submit_custom_random = st.form_submit_button("Generate Custom Random Selection")
 
-    if submit_custom:
-        # Start building the final selection
+    if submit_custom_random:
         final_selection = {}
 
         # Category & Type
-        if select_category_type:
-            final_selection['category'] = custom_selection['category']
-            final_selection['type'] = custom_selection['type']
+        if customize_category_type:
+            final_selection['category'] = user_selection['category']
+            final_selection['type'] = user_selection['type']
         else:
             category_rand, type_rand, _, _, _, _ = generate_random()
             final_selection['category'] = category_rand
             final_selection['type'] = type_rand
 
         # Adjectives
-        if select_adjectives:
-            final_selection['adjective'] = custom_selection['adjective']
+        if customize_adjectives:
+            final_selection['adjective'] = user_selection['adjective']
         else:
             final_selection['adjective'] = {key: random.choice(values) for key, values in adjectives.items()}
 
         # Look
-        if select_look:
-            final_selection['look'] = custom_selection['look']
+        if customize_look:
+            final_selection['look'] = user_selection['look']
         else:
             final_selection['look'] = random.choice(list(looks.keys()))
 
         # Feel
-        if select_feel:
-            final_selection['feel'] = custom_selection['feel']
+        if customize_feel:
+            final_selection['feel'] = user_selection['feel']
         else:
             final_selection['feel'] = random.choice(list(feels.keys()))
 
         # Vibe
-        if select_vibe:
-            final_selection['vibe'] = custom_selection['vibe']
+        if customize_vibe:
+            final_selection['vibe'] = user_selection['vibe']
         else:
             final_selection['vibe'] = random.choice(list(vibes.keys()))
 
         # Save to history
         st.session_state.history.append(final_selection)
-        st.success("Custom selection generated and saved to history!")
+        st.success("Custom random selection generated and saved to history!")
 
-        # Display the custom selection
+        # Display the custom random selection
         st.markdown(f"""
             <div class="card">
-                <div class="header">Custom Selection</div>
+                <div class="header">Custom Random Selection</div>
                 <div style="display: flex; gap: 40px;">
                     <div>
                         <div class="subheader">Category & Type</div>
