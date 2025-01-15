@@ -1,56 +1,141 @@
 import streamlit as st
 import random
 
-# Dictionaries for the categories
+# Expanded Dictionaries for the categories
 types = {
-    "Wall Decor": ["Painting", "Tapestry", "Mirror", "Wall Clock"],
-    "Table Decor": ["Vase", "Candle Holder", "Ornament", "Bookend", "Tray"],
-    "Lighting": ["Lamp", "Lantern", "Chandelier", "String Lights", "Sconce"],
-    "Soft Decor": ["Throw Pillow", "Blanket", "Rug", "Curtain", "Bean Bag"],
-    "Functional Decor": ["Planter", "Key Holder", "Coat Rack", "Jewelry Box"],
-    "Art Pieces": ["Sculpture", "Figurine", "Abstract Art", "Statue", "Relief Art"],
-    "Seasonal Decor": ["Christmas Tree", "Pumpkin", "Wreath", "Garland"],
-    "Other": ["Room Divider", "Decorative Basket", "Accent Furniture", "Clock"]
+    "Wall Decor": [
+        "Painting", "Tapestry", "Mirror", "Wall Clock", "Wall Sticker", "Wall Shelf",
+        "Photo Frame", "Mirrored Art", "Shadow Box", "Wall Paneling", "Canvas Print",
+        "Metal Wall Art", "3D Wall Sculpture", "Wooden Wall Art", "Fabric Wall Art",
+        "LED Wall Light", "Decorative Wall Hooks", "Vinyl Wall Decals", "Framed Posters",
+        "Decorative Wall Tiles", "Macramé Wall Hanging"
+    ],
+    "Table Decor": [
+        "Vase", "Candle Holder", "Ornament", "Bookend", "Tray", "Table Lamp",
+        "Centerpiece", "Fruit Bowl", "Decorative Plates", "Coasters", "Salt and Pepper Shakers",
+        "Napkin Holder", "Decorative Tray", "Table Runner", "Candle Lantern", "Desk Organizer",
+        "Decorative Bowls", "Succulent Holders", "Miniature Figurines", "Table Clock",
+        "Decorative Books", "Tabletop Fountain", "Terrarium", "Decorative Wine Rack"
+    ],
+    "Lighting": [
+        "Lamp", "Lantern", "Chandelier", "String Lights", "Sconce", "Desk Lamp",
+        "Floor Lamp", "Pendant Light", "Wall Sconce", "LED Strip Lights", "Desk Light",
+        "Hanging Lantern", "Task Lighting", "Smart Bulb", "Neon Light Sign",
+        "Solar Light", "Fiber Optic Lamp", "Paper Lanterns", "Geometric Light Fixtures",
+        "Vintage Edison Bulb Fixtures"
+    ],
+    "Soft Decor": [
+        "Throw Pillow", "Blanket", "Rug", "Curtain", "Bean Bag", "Decorative Cushion",
+        "Faux Fur Throw", "Ottoman", "Window Liner", "Seat Cushion", "Decorative Pouf",
+        "Floor Cushion", "Bedspread", "Decorative Curtains", "Lounge Pillow", "Quilt",
+        "Tapestry", "Fabric Wall Art", "Decorative Bed Pillows", "Sheer Curtains",
+        "Patterned Throw Blankets", "Velvet Cushions", "Woven Poufs", "Decorative Throws"
+    ],
+    "Functional Decor": [
+        "Planter", "Key Holder", "Coat Rack", "Jewelry Box", "Wall-mounted Planter",
+        "Mail Organizer", "Umbrella Stand", "Magazine Rack", "Jewelry Stand", "Wall Hooks",
+        "Shoe Rack", "Key Organizer", "Coat Hanger", "Storage Basket",
+        "Decorative Storage", "Wall-mounted Shelves", "Tool Organizer", "Cable Management Station",
+        "Decorative Baskets", "Entryway Organizer", "Multi-functional Furniture",
+        "Decorative Hooks", "Bike Rack", "Wall-mounted Drying Rack"
+    ],
+    "Art Pieces": [
+        "Sculpture", "Figurine", "Abstract Art", "Statue", "Relief Art", "Wall Sculpture",
+        "Canvas Art", "Metal Art", "Glass Art", "Wooden Art", "Mosaic Art",
+        "Mixed Media Art", "Digital Art", "Kinetic Sculpture", "Ceramic Art",
+        "Paper Art", "Stone Carving", "Brass Art", "Recycled Art", "Light Art",
+        "Wire Art", "Clay Art", "Enamel Art", "Textile Art"
+    ],
+    "Seasonal Decor": [
+        "Christmas Tree", "Pumpkin", "Wreath", "Garland", "Halloween Pumpkin",
+        "Easter Egg Display", "Thanksgiving Centerpiece", "Hanukkah Menorah",
+        "Valentine's Heart Decor", "Spring Bouquet", "Summer Garland",
+        "Autumn Leaves Decor", "Winter Icicles", "Festive Lights",
+        "Seasonal Figurines", "Holiday Candles", "Seasonal Tablecloth",
+        "Seasonal Banners", "Holiday Ornaments", "Seasonal Pillows",
+        "New Year Decor", "Diwali Lanterns", "Ramadan Decorations",
+        "St. Patrick's Day Decor", "Fourth of July Flags"
+    ],
+    "Other": [
+        "Room Divider", "Decorative Basket", "Accent Furniture", "Clock",
+        "Decorative Screen", "Storage Basket", "Accent Chair", "Console Table",
+        "Decorative Tray", "Pet Bed", "Decorative Clock", "Folding Screen",
+        "Decorative Lantern", "Decorative Mirror", "Bookcase", "Side Table",
+        "Bar Cart", "Decorative Planter", "Indoor Fountain", "Decorative Vase",
+        "Scented Candle Holder", "Decorative Storage Ottoman",
+        "Entryway Bench", "Decorative Pouf", "Accent Table"
+    ]
 }
 
 adjectives = {
-    "Size": ["Tiny", "Small", "Medium", "Large", "Oversized"],
-    "Shape": ["Round", "Square", "Rectangular", "Triangular", "Irregular"],
-    "Material": ["Wooden", "Metallic", "Ceramic", "Glass", "Woven", "Plastic", "Stone"],
-    "Color": ["Vibrant", "Pastel", "Neutral", "Monochrome", "Gradient"],
-    "Finish": ["Glossy", "Matte", "Polished", "Textured", "Aged", "Distressed"],
-    "Decorative Detail": ["Patterned", "Plain", "Engraved", "Painted", "Studded"],
-    "Theme Specific": ["Geometric", "Floral", "Abstract", "Nature-Inspired", "Minimalist"]
+    "Size": ["Tiny", "Small", "Medium", "Large", "Oversized", "Petite", "Compact", "Generous", "Grand", "Miniature"],
+    "Shape": ["Round", "Square", "Rectangular", "Triangular", "Irregular", "Oval", "Hexagonal", "Circular", "Oblong", "Asymmetrical"],
+    "Material": ["Wooden", "Metallic", "Ceramic", "Glass", "Woven", "Plastic", "Stone", "Fabric", "Leather", "Paper",
+                "Concrete", "Marble", "Bamboo", "Resin", "Brass", "Copper", "Iron", "Silk", "Velvet", "Lacquer"],
+    "Color": ["Vibrant", "Pastel", "Neutral", "Monochrome", "Gradient", "Bold", "Earth-toned", "Bright", "Dark", "Light",
+              "Muted", "Multicolored", "Primary-colored", "Secondary-colored", "Primary Palette", "Warm-toned",
+              "Cool-toned", "Jewel-toned", "Metallic-colored", "Primary Colors"],
+    "Finish": ["Glossy", "Matte", "Polished", "Textured", "Aged", "Distressed", "Brushed", "Shimmering", "Satin",
+               "Matte", "Lacquered", "Patinated", "Antiqued", "Hammered", "Rustic", "Smooth", "Rough", "Satin-finished",
+               "Embossed", "Engraved"],
+    "Decorative Detail": ["Patterned", "Plain", "Engraved", "Painted", "Studded", "Embellished", "Beaded", "Printed",
+                          "Laser-cut", "Hand-painted", "Intricate", "Ornate", "Geometric", "Floral", "Abstract",
+                          "Striped", "Polka-dotted", "Chevron", "Paisley", "Camouflage"],
+    "Theme Specific": ["Geometric", "Floral", "Abstract", "Nature-Inspired", "Minimalist", "Vintage", "Rustic",
+                        "Modern", "Art Deco", "Scandinavian", "Bohemian", "Industrial", "Eclectic", "Mid-Century",
+                        "Contemporary", "Traditional", "Farmhouse", "Nautical", "Tropical", "Zen"]
 }
 
 looks = {
-    "Modern": ["Sleek", "Minimalist", "Clean Lines"],
-    "Traditional": ["Ornate", "Detailed", "Classic"],
-    "Rustic": ["Raw", "Weathered", "Earthy"],
-    "Industrial": ["Metallic", "Rough", "Functional"],
-    "Vintage": ["Antique", "Faded", "Nostalgic"],
-    "Eclectic": ["Mixed", "Bohemian", "Vibrant"],
-    "Luxurious": ["Opulent", "Rich", "Elegant"],
-    "Artistic": ["Creative", "Unique", "Expressive"]
+    "Modern": ["Sleek", "Minimalist", "Clean Lines", "Contemporary", "Futuristic"],
+    "Traditional": ["Ornate", "Detailed", "Classic", "Elegant", "Timeless"],
+    "Rustic": ["Raw", "Weathered", "Earthy", "Handcrafted", "Natural"],
+    "Industrial": ["Metallic", "Rough", "Functional", "Exposed", "Urban"],
+    "Vintage": ["Antique", "Faded", "Nostalgic", "Retro", "Timeless"],
+    "Eclectic": ["Mixed", "Bohemian", "Vibrant", "Colorful", "Diverse"],
+    "Luxurious": ["Opulent", "Rich", "Elegant", "Sumptuous", "Grand"],
+    "Artistic": ["Creative", "Unique", "Expressive", "Avant-garde", "Innovative"],
+    "Scandinavian": ["Simple", "Functional", "Light", "Minimalist", "Cozy"],
+    "Mid-Century": ["Retro", "Geometric", "Bold Colors", "Organic Shapes", "Minimalist"],
+    "Farmhouse": ["Shabby Chic", "Rustic", "Cozy", "Vintage", "Homely"],
+    "Nautical": ["Marine", "Sea-inspired", "Blue-toned", "Sailor-themed", "Beachy"],
+    "Tropical": ["Vibrant", "Lush", "Leafy", "Bright", "Exotic"],
+    "Zen": ["Calm", "Balanced", "Harmonious", "Peaceful", "Minimalist"]
 }
 
 feels = {
-    "Warm": ["Inviting", "Cozy", "Homely"],
-    "Cool": ["Refreshing", "Calm", "Serene"],
-    "Dynamic": ["Energetic", "Bold", "Vivid"],
-    "Relaxing": ["Soothing", "Tranquil", "Peaceful"],
-    "Inspiring": ["Uplifting", "Motivating", "Visionary"],
-    "Playful": ["Fun", "Whimsical", "Quirky"]
+    "Warm": ["Inviting", "Cozy", "Homely", "Comfortable", "Snug"],
+    "Cool": ["Refreshing", "Calm", "Serene", "Relaxing", "Tranquil"],
+    "Dynamic": ["Energetic", "Bold", "Vivid", "Vibrant", "Lively"],
+    "Relaxing": ["Soothing", "Tranquil", "Peaceful", "Calm", "Restful"],
+    "Inspiring": ["Uplifting", "Motivating", "Visionary", "Encouraging", "Empowering"],
+    "Playful": ["Fun", "Whimsical", "Quirky", "Lighthearted", "Cheerful"],
+    "Sophisticated": ["Refined", "Elegant", "Graceful", "Chic", "Polished"],
+    "Bohemian": ["Free-Spirited", "Eclectic", "Colorful", "Artistic", "Laid-back"],
+    "Cozy": ["Comfortable", "Snug", "Welcoming", "Intimate", "Warm"],
+    "Minimalist": ["Clean", "Uncluttered", "Simple", "Essential", "Streamlined"],
+    "Elegant": ["Graceful", "Stylish", "Tasteful", "Polished", "Refined"],
+    "Modern": ["Sleek", "Stylish", "Contemporary", "Chic", "Trendy"],
+    "Rustic": ["Earthy", "Natural", "Handcrafted", "Raw", "Weathered"],
+    "Vintage": ["Timeless", "Classic", "Nostalgic", "Retro", "Antique"]
 }
 
 vibes = {
-    "Coastal": ["Beachy", "Light", "Airy"],
-    "Bohemian": ["Layered", "Colorful", "Free-Spirited"],
-    "Urban": ["Contemporary", "Edgy", "Chic"],
-    "Nature": ["Organic", "Earthy", "Green"],
-    "Romantic": ["Soft", "Dreamy", "Elegant"],
-    "Adventurous": ["Bold", "Dramatic", "Exploratory"],
-    "Festive": ["Bright", "Joyful", "Celebratory"]
+    "Coastal": ["Beachy", "Light", "Airy", "Sea-inspired", "Sunny"],
+    "Bohemian": ["Layered", "Colorful", "Free-Spirited", "Eclectic", "Artistic"],
+    "Urban": ["Contemporary", "Edgy", "Chic", "Modern", "Industrial"],
+    "Nature": ["Organic", "Earthy", "Green", "Botanical", "Natural"],
+    "Romantic": ["Soft", "Dreamy", "Elegant", "Lush", "Whimsical"],
+    "Adventurous": ["Bold", "Dramatic", "Exploratory", "Exciting", "Dynamic"],
+    "Festive": ["Bright", "Joyful", "Celebratory", "Colorful", "Lively"],
+    "Zen": ["Calm", "Balanced", "Harmonious", "Peaceful", "Tranquil"],
+    "Vintage": ["Retro", "Nostalgic", "Timeless", "Classic", "Antique"],
+    "Industrial": ["Metallic", "Rough", "Functional", "Exposed", "Urban"],
+    "Tropical": ["Vibrant", "Lush", "Exotic", "Bright", "Colorful"],
+    "Rustic": ["Earthy", "Natural", "Handcrafted", "Raw", "Weathered"],
+    "Minimalist": ["Clean", "Uncluttered", "Simple", "Essential", "Streamlined"],
+    "Farmhouse": ["Shabby Chic", "Rustic", "Cozy", "Vintage", "Homely"],
+    "Scandinavian": ["Simple", "Functional", "Light", "Minimalist", "Cozy"]
 }
 
 # Function to generate random selections
@@ -178,6 +263,7 @@ if method == "Manual":
     with st.form(key='manual_selection'):
         selected_category = st.selectbox("Select a category:", list(types.keys()))
         selected_type = st.selectbox("Select a type:", types[selected_category])
+        st.markdown("**Select Adjectives:**")
         selected_adjective = {key: st.selectbox(f"Select {key}:", values) for key, values in adjectives.items()}
         selected_look = st.selectbox("Select a look:", list(looks.keys()))
         selected_feel = st.selectbox("Select a feel:", list(feels.keys()))
