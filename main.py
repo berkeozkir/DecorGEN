@@ -54,14 +54,14 @@ vibes = {
 }
 
 # Function to generate random selections
-def generate_random():
-    selected_category = random.choice(list(types.keys()))
-    selected_type = random.choice(types[selected_category])
-    selected_adjective = {key: random.choice(values) for key, values in adjectives.items()}
-    selected_look = random.choice(list(looks.keys()))
-    selected_feel = random.choice(list(feels.keys()))
-    selected_vibe = random.choice(list(vibes.keys()))
-    return selected_category, selected_type, selected_adjective, selected_look, selected_feel, selected_vibe
+def generate_random(selected_category=None):
+    category = selected_category if selected_category else random.choice(list(types.keys()))
+    type_ = random.choice(types[category])
+    adjective = {key: random.choice(values) for key, values in adjectives.items()}
+    look = random.choice(list(looks.keys()))
+    feel = random.choice(list(feels.keys()))
+    vibe = random.choice(list(vibes.keys()))
+    return category, type_, adjective, look, feel, vibe
 
 # Initialize session state for history and selected history
 if "history" not in st.session_state:
@@ -129,7 +129,7 @@ st.markdown("""
 
 # Streamlit app UI
 st.title("Decorative House Item Generator")
-st.write("Generate decorative house item designs by selecting categories manually or randomly!")
+st.write("Generate decorative house item designs by selecting categories manually, randomly, or partially!")
 
 # Sidebar for selection history
 st.sidebar.title("Selection History")
@@ -172,7 +172,7 @@ if st.session_state.selected_history_index is not None:
     st.markdown("---")
 
 # Selection method
-method = st.radio("Choose a selection method:", ["Manual", "Random"], horizontal=True)
+method = st.radio("Choose a selection method:", ["Manual", "Random", "Custom"], horizontal=True)
 
 if method == "Manual":
     with st.form(key='manual_selection'):
@@ -236,3 +236,119 @@ elif method == "Random":
                 </div>
             </div>
         """, unsafe_allow_html=True)
+
+elif method == "Custom":
+    st.subheader("Custom Selection")
+    with st.form(key='custom_selection'):
+        st.write("Select the attributes you want to set manually. Others will be randomly generated.")
+
+        # Attribute selection checkboxes
+        select_category_type = st.checkbox("Set Category & Type")
+        select_adjectives = st.checkbox("Set Adjectives")
+        select_look = st.checkbox("Set Look")
+        select_feel = st.checkbox("Set Feel")
+        select_vibe = st.checkbox("Set Vibe")
+
+        # Initialize a dictionary to hold selections
+        custom_selection = {}
+
+        # Category & Type
+        if select_category_type:
+            selected_category_custom = st.selectbox("Select a category:", list(types.keys()), key='custom_category')
+            selected_type_custom = st.selectbox("Select a type:", types[selected_category_custom], key='custom_type')
+            custom_selection['category'] = selected_category_custom
+            custom_selection['type'] = selected_type_custom
+
+        # Adjectives
+        if select_adjectives:
+            st.markdown("**Select Adjectives:**")
+            selected_adjective_custom = {}
+            for key, values in adjectives.items():
+                selected_adjective_custom[key] = st.selectbox(f"Select {key}:", values, key=f'custom_{key.lower()}')
+            custom_selection['adjective'] = selected_adjective_custom
+
+        # Look
+        if select_look:
+            selected_look_custom = st.selectbox("Select a look:", list(looks.keys()), key='custom_look')
+            custom_selection['look'] = selected_look_custom
+
+        # Feel
+        if select_feel:
+            selected_feel_custom = st.selectbox("Select a feel:", list(feels.keys()), key='custom_feel')
+            custom_selection['feel'] = selected_feel_custom
+
+        # Vibe
+        if select_vibe:
+            selected_vibe_custom = st.selectbox("Select a vibe:", list(vibes.keys()), key='custom_vibe')
+            custom_selection['vibe'] = selected_vibe_custom
+
+        submit_custom = st.form_submit_button("Generate Custom Selection")
+
+    if submit_custom:
+        # Start building the final selection
+        final_selection = {}
+
+        # Category & Type
+        if select_category_type:
+            final_selection['category'] = custom_selection['category']
+            final_selection['type'] = custom_selection['type']
+        else:
+            category_rand, type_rand, _, _, _, _ = generate_random()
+            final_selection['category'] = category_rand
+            final_selection['type'] = type_rand
+
+        # Adjectives
+        if select_adjectives:
+            final_selection['adjective'] = custom_selection['adjective']
+        else:
+            final_selection['adjective'] = {key: random.choice(values) for key, values in adjectives.items()}
+
+        # Look
+        if select_look:
+            final_selection['look'] = custom_selection['look']
+        else:
+            final_selection['look'] = random.choice(list(looks.keys()))
+
+        # Feel
+        if select_feel:
+            final_selection['feel'] = custom_selection['feel']
+        else:
+            final_selection['feel'] = random.choice(list(feels.keys()))
+
+        # Vibe
+        if select_vibe:
+            final_selection['vibe'] = custom_selection['vibe']
+        else:
+            final_selection['vibe'] = random.choice(list(vibes.keys()))
+
+        # Save to history
+        st.session_state.history.append(final_selection)
+        st.success("Custom selection generated and saved to history!")
+
+        # Display the custom selection
+        st.markdown(f"""
+            <div class="card">
+                <div class="header">Custom Selection</div>
+                <div style="display: flex; gap: 40px;">
+                    <div>
+                        <div class="subheader">Category & Type</div>
+                        <p><strong>Category:</strong> {final_selection['category']}</p>
+                        <p><strong>Type:</strong> {final_selection['type']}</p>
+                    </div>
+                    <div>
+                        <div class="subheader">Look & Feel</div>
+                        <p><strong>Look:</strong> {final_selection['look']}</p>
+                        <p><strong>Feel:</strong> {final_selection['feel']}</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="subheader">Adjectives & Vibe</div>
+                    <p><strong>Adjectives:</strong></p>
+                    <ul>
+                        {''.join([f'<li class="list-item">{key}: {value}</li>' for key, value in final_selection['adjective'].items()])}
+                    </ul>
+                    <p><strong>Vibe:</strong> {final_selection['vibe']}</p>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown("---")
